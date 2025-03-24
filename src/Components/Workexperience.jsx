@@ -60,41 +60,7 @@ const Workexperience = () => {
                 </div>
 
                 {/* Trainee Developer Timeline Item */}
-                <div className="mb-8 flex justify-between flex-col md:flex-row items-center w-full right-timeline">
-                  <div className="order-1 w-auto"></div>
-                  <div className="order-1 w-full sm:w-5/6 px-4 py-12 border-4 border-black shadow-[6px_6px_0_0_#000] transition hover:shadow-none bg-white rounded-3xl">
-                    <span className="mb-3 text-base text-red-900">
-                      Nov 2023 - Apr 2024
-                    </span>
-                    <h4 className="mb-1 text-2xl md:text-3xl lg:text-5xl text-red-900 heading_font font-bold">
-                      Chetu World Class Software Solutions
-                    </h4>
-                    <h5 className="mb-4 font-semibold text-xs md:text-lg">
-                      Trainee Developer
-                    </h5>
-                    <div className="text-sm md:text-base leading-snug text-900 text-opacity-100 gap-4 flex flex-col p-4">
-                      <ul className="list-disc">
-                        <li>
-                          Completed an intensive training program specializing
-                          in React.js development.
-                        </li>
-                        <li>
-                          Contributed to the design, development, and
-                          maintenance of user interfaces and reusable components
-                          using React.js.
-                        </li>
-                        <li>
-                          Acquired hands-on experience in building dynamic,
-                          responsive, and feature-rich web applications.
-                        </li>
-                        <li>
-                          Implemented best practices for writing clean,
-                          maintainable, and performance-optimized code.
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-                </div>
+
               </div>
             </div>
           </div>
