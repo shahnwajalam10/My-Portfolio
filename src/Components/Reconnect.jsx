@@ -11,7 +11,7 @@ const Reconnect = () => {
         </div>
         <div className="w-full flex flex-col sm:flex-row sm:justify-center gap-6 my-8 md:my-12">
           <a
-            href="https://drive.google.com/file/d/1OMR9zmSTgElTGtSB5_RNQWt8tUGHzZzN/view?usp=sharing"
+            href="https://drive.google.com/file/d/1lRtZyVneRzNROJxNKD8hQ2BOg_hOLtxM/view?usp=sharing"
             target="_blank"
             rel="noreferrer"
             data-aos="fade-up"
