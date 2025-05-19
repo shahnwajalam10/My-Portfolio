@@ -16,7 +16,7 @@ const Education = () => {
             <div className="relative wrap overflow-hidden p-10">
               <div className="border-2-2 absolute h-full border-green-50 border-8 opacity-0"></div>
               {/* Masai School */}
-              <div
+              {/* <div
                 className="mb-8 flex justify-between flex-col md:flex-row-reverse items-center w-full left-timeline"
                 data-aos="fade-down"
                 data-aos-easing="linear"
@@ -41,7 +41,7 @@ const Education = () => {
                     </ul>
                   </div>
                 </div>
-              </div>
+              </div> */}
               {/* Quantum University */}
               <div
                 className="mb-8 flex justify-between items-center w-full right-timeline"
@@ -51,7 +51,7 @@ const Education = () => {
               >
                 <div className="order-1 w-full md:w-5/6 px-4 py-12 border-4 border-black shadow-[6px_6px_0_0_#000] transition hover:shadow-none bg-white rounded-3xl">
                   <span className="mb-3 text-base text-cyan-900">
-                    January 2020 - July 2024
+                    October 2020 - June 2024
                   </span>
                   <h4 className="mb-1 text-2xl sm:text-3xl md:text-5xl text-cyan-900 heading_font font-bold">
                     Quantum University Roorkee, INDIA
@@ -59,7 +59,7 @@ const Education = () => {
                   <h5 className="mb-4 font-semibold text-xs sm:text-sm md:text-lg">
                     Bachelor of Technology in Computer Science and Engineering
                   </h5>
-                  <b>CGPA</b> 7.40
+                  <b>CGPA</b> 7.41
                 </div>
               </div>
             </div>

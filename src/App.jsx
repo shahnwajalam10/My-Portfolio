@@ -4,7 +4,7 @@ import Footer from "./Components/Footer"
 import Navbar from "./Components/Navbar"
 import Projects from "./Components/Projects"
 import Reconnect from "./Components/Reconnect"
-import Workexperience from "./Components/Workexperience"
+// import Workexperience from "./Components/Workexperience"
 
 function App() {
 
@@ -13,7 +13,7 @@ function App() {
     <Navbar/>
     <Reconnect/>
     <Aboutme/>
-    <Workexperience/>
+    {/* <Workexperience/> */}
     <Projects/>
     <Education/>
     <Footer/>
