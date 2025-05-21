@@ -1,6 +1,6 @@
 import React from "react";
 
-const Card = ({ imgsrc, date, title, desc, link, techused }) => {
+const Card = ({ imgsrc, date, title, desc, link, deployLink, techused }) => {
   return (
     <div className="relative w-full h-full border-4 border-black bg-white shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
       {/* Light blue background layer */}
@@ -44,15 +44,25 @@ const Card = ({ imgsrc, date, title, desc, link, techused }) => {
             </div>
           </div>
 
-          {/* Button */}
-          <a
-            href={link}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="w-full text-center px-6 py-3 bg-black text-white font-bold border-2 border-black uppercase tracking-wider"
-          >
-            View Project
-          </a>
+          {/* Buttons */}
+          <div className="flex gap-4">
+            <a
+              href={link}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex-1 text-center px-6 py-3 bg-black text-white font-bold border-2 border-black uppercase tracking-wider"
+            >
+              GitHub
+            </a>
+            <a
+              href={deployLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex-1 text-center px-6 py-3 bg-[#A5D8FF] text-black font-bold border-2 border-black uppercase tracking-wider"
+            >
+              Live Demo
+            </a>
+          </div>
         </div>
       </div>
     </div>

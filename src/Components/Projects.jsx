@@ -24,6 +24,7 @@ const Projects = () => {
               "Implemented full CRUD operations for blog posts, developed an API with a 99% success rate using Thunder VS Code extension, and optimized MongoDB queries, reducing average response time by 30%."
             }
             link={"https://github.com/shahnwajalam10/BLOG-APP"}
+            deployLink={"https://blog-app-seven-iota.vercel.app/"}
             title={"BLOG APP"}
             techused="React.js, Tailwind CSS, MongoDB, Node.js"
             borderColor="border-blue-400"
@@ -35,6 +36,7 @@ const Projects = () => {
               "Led a team of 4 members in developing a Facebook clone using HTML, CSS, and JavaScript DOM, implementing features such as user authentication and dynamic content updates."
             }
             link={"https://github.com/shahnwajalam10/Facebook-Clone"}
+            deployLink={"https://splendorous-duckanoo-efcf4f.netlify.app/index.html"}
             title={"FACEBOOK CLONE"}
             techused="HTML, CSS, JavaScript DOM"
             borderColor="border-green-400"

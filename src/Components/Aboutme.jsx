@@ -89,9 +89,9 @@ const Aboutme = () => {
                 className="px-8 py-4 bg-black text-white font-bold border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] hover:-translate-x-1 hover:-translate-y-1 transition-all duration-300 uppercase text-sm md:text-base font-mono hover-pop"
                 aria-label="Connect with me on LinkedIn"
               >
-                Connect Me
+                Let's Connect & Build Together
               </a>
-              <a
+              {/* <a
                 href="https://drive.google.com/file/d/17eLSGuAwBhjAT8xMV_aD88nUTnMd-LEu/view?usp=sharing"
                 download
                 data-aos="fade-up"
@@ -100,7 +100,7 @@ const Aboutme = () => {
                 aria-label="Download my resume"
               >
                 Download Resume
-              </a>
+              </a> */}
             </div>
           </div>
 
