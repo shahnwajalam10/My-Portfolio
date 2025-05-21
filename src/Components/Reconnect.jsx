@@ -6,7 +6,7 @@ import { useInView } from 'react-intersection-observer';
 const Reconnect = () => {
   const [text, setText] = useState('');
   const [showCursor, setShowCursor] = useState(true);
-  const fullText = "Hi, I'm Shahnwaz Alam";
+  const fullText = "Hi, I'm Shahnwaj Alam";
   const controls = useAnimation();
   const [ref, inView] = useInView();
   const [buttonHover, setButtonHover] = useState(null);
