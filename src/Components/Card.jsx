@@ -2,55 +2,56 @@ import React from "react";
 
 const Card = ({ imgsrc, date, title, desc, link, techused }) => {
   return (
-    <div
-      className="w-80 h-full p-6 relative"
-      style={{
-        backgroundColor: "#f5f5f5", // Soft muted background color for a neubrutalism feel
-        boxShadow: "6px 6px 0px rgba(0, 0, 0, 0.4), -6px -6px 0px rgba(0, 0, 0, 0.4)", // Bold shadow effect
-      }}
-    >
-      <div className="flex flex-col h-full space-y-6">
+    <div className="relative w-full h-full border-4 border-black bg-white shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
+      {/* Light blue background layer */}
+      <div className="absolute -bottom-2 -right-2 h-full w-full border-2 border-black bg-[#A5D8FF] -z-10"></div>
+      
+      <div className="flex flex-col h-full p-0 overflow-hidden">
         {/* Image Section */}
-        <figure className="w-full h-56 mb-6 relative">
+        <div className="relative overflow-hidden border-b-4 border-black">
           <img
             src={imgsrc}
-            alt="thumbnail"
-            className="w-full h-full object-cover"
-            style={{
-              boxShadow: "12px 12px 0px rgba(0, 0, 0, 0.2)", // Sharp shadow for the image
-            }}
+            alt={title}
+            className="w-full h-48 object-cover"
           />
-        </figure>
+          <div className="absolute top-4 left-4 bg-black text-white px-3 py-1 font-mono text-sm">
+            {date}
+          </div>
+        </div>
 
         {/* Content Section */}
-        <div className="flex flex-col space-y-4">
-          {/* Date */}
-          <p className="text-sm text-gray-700">{date}</p>
-
+        <div className="flex flex-col flex-grow p-6">
           {/* Title */}
-          <h2 className="text-3xl font-bold text-black">{title}</h2>
+          <h2 className="text-2xl font-extrabold uppercase mb-3 text-black heading_font">
+            {title}
+          </h2>
 
           {/* Description */}
-          <p className="text-sm text-gray-900">{desc}</p>
+          <p className="text-gray-800 mb-4 flex-grow">{desc}</p>
 
           {/* Technologies */}
-          <p className="text-xs text-gray-800">
-            <b>Technology Used:</b> {techused}
-          </p>
+          <div className="mb-6">
+            <h3 className="font-bold text-sm uppercase mb-2 font-mono">TECH STACK:</h3>
+            <div className="flex flex-wrap gap-2">
+              {techused.split(",").map((tech, index) => (
+                <span 
+                  key={index} 
+                  className="px-3 py-1 bg-[#A5D8FF] border-2 border-black text-xs font-mono font-bold"
+                >
+                  {tech.trim()}
+                </span>
+              ))}
+            </div>
+          </div>
 
-          {/* Button with sharp neubrutalism shadow */}
+          {/* Button */}
           <a
             href={link}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-block w-full text-center py-3 px-6 font-bold text-black uppercase tracking-wider bg-white hover:bg-gray-100"
-            style={{
-              border: "3px solid black", // Strong border with no rounded corners
-              boxShadow: "6px 6px 0px rgba(0, 0, 0, 0.4), -6px -6px 0px rgba(0, 0, 0, 0.4)", // Bold shadow
-              textTransform: "uppercase",
-            }}
+            className="w-full text-center px-6 py-3 bg-black text-white font-bold border-2 border-black uppercase tracking-wider"
           >
-            Check Out This Project
+            View Project
           </a>
         </div>
       </div>
