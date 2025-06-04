@@ -1,7 +1,7 @@
 import React from 'react';
 import { FaGithub, FaLinkedinIn } from 'react-icons/fa';
 import { MdEmail, MdRocketLaunch } from 'react-icons/md';
-import { SiLeetcode } from 'react-icons/si';
+import { SiGeeksforgeeks  } from 'react-icons/si';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 
@@ -27,11 +27,17 @@ const Footer = () => {
       label: "LinkedIn",
       color: "bg-[#0A66C2]"
     },
+    // {
+    //   icon: <SiLeetcode />,
+    //   href: "https://leetcode.com/shahnwajalam01/",
+    //   label: "LeetCode",
+    //   color: "bg-[#FFA116]"
+    // },
     {
-      icon: <SiLeetcode />,
-      href: "https://leetcode.com/shahnwajalam01/",
-      label: "LeetCode",
-      color: "bg-[#FFA116]"
+      icon: <SiGeeksforgeeks />,
+      href: "https://auth.geeksforgeeks.org/user/shahnwajalam01/", // Replace with your actual GFG profile URL
+      label: "GeeksforGeeks",
+      color: "bg-[#2F8D46]"
     },
     {
       icon: <MdEmail />,

@@ -102,7 +102,7 @@ const Reconnect = () => {
   const handleResumeClick = (e) => {
     e.preventDefault(); // Prevent default anchor behavior
 
-    const fileUrl = './resume/shahnwaj_alam_resume.pdf';
+    const fileUrl = './resume/shahnwaj_alam_resume01.pdf';
 
     // Trigger file download
     const link = document.createElement('a');
