@@ -68,11 +68,91 @@ const Education = () => {
             <div className="absolute left-0 bottom-0 w-6 h-6 bg-pink-400 border-2 border-black rounded-full transform -translate-x-1/2 hidden md:block"></div>
 
             <div className="relative wrap overflow-hidden p-10">
-              {/* Quantum University */}
+              {/* Masai School (Most Recent) */}
               <div
                 className="mb-12 flex justify-between items-center w-full right-timeline"
                 data-aos="fade-up"
                 data-aos-delay="200"
+              >
+                <div 
+                  className="order-1 w-full md:w-5/6 px-6 py-8 border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-1 hover:translate-y-1 transition-all duration-300 bg-white rounded-3xl group relative"
+                >
+                  <div className="absolute -bottom-2 -right-2 h-full w-full border-2 border-black bg-[#CEEDC7] -z-10 group-hover:bg-[#A9DD9D] transition-colors duration-300 rounded-3xl"></div>
+                  
+                  <div className="flex flex-col md:flex-row md:items-center gap-4 mb-4">
+                    <div className="bg-green-300 p-3 rounded-full border-2 border-black flex items-center justify-center">
+                      <Calendar size={24} />
+                    </div>
+                    <span className="font-mono text-gray-700 font-bold">
+                      Sep 2024 - Present
+                    </span>
+                  </div>
+
+                  <h4 className="mb-2 text-3xl sm:text-4xl md:text-5xl text-black heading_font font-bold">
+                    MASAI SCHOOL
+                  </h4>
+                  <h5 className="mb-4 font-semibold text-lg md:text-xl font-mono text-gray-800">
+                    Full Stack Web Development
+                  </h5>
+
+                  <div className="flex flex-wrap gap-4 mb-6">
+                    <div className="px-4 py-2 bg-[#CEEDC7] border-2 border-black rounded-full font-mono text-sm font-bold flex items-center gap-2">
+                      <Award size={16} />
+                      <span>1200+ Hours of Coding</span>
+                    </div>
+                    <div className="px-4 py-2 bg-[#CEEDC7] border-2 border-black rounded-full font-mono text-sm font-bold flex items-center gap-2">
+                      <MapPin size={16} />
+                      <span>Bengaluru, India</span>
+                    </div>
+                  </div>
+
+                  <div className="border-t-2 border-black pt-4">
+                    <h6 className="font-bold text-lg mb-4 font-mono inline-block bg-green-300 px-3 py-1 border-2 border-black transform rotate-1">TECHNOLOGIES LEARNED:</h6>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-2">
+                      {[
+                        "HTML, CSS & JavaScript",
+                        "React & Redux",
+                        "Node.js & Express",
+                        "MongoDB",
+                        "Data Structures & Algorithms",
+                        "System Design",
+                        "Git & GitHub",
+                        "PostgreSQL"
+                      ].map((course, index) => (
+                        <div 
+                          key={index}
+                          className="flex items-center gap-2 font-mono bg-gray-100 p-2 rounded-lg border-2 border-gray-300 hover:bg-gray-200 transition-colors"
+                          data-aos="fade-up"
+                          data-aos-delay={100 + index * 50}
+                        >
+                          <div className="w-2 h-2 bg-black rounded-full"></div>
+                          {course}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Achievement Callout */}
+                  <div 
+                    className="mt-6 bg-gradient-to-r from-green-200 to-green-300 p-4 border-2 border-black rounded-xl relative overflow-hidden"
+                    data-aos="fade-up"
+                    data-aos-delay="300"
+                  >
+                    <div className="absolute top-0 right-0 bg-white w-12 h-12 border-l-2 border-b-2 border-black rounded-bl-3xl"></div>
+                    <h6 className="font-bold font-mono mb-2">ACHIEVEMENT HIGHLIGHT:</h6>
+                    <p className="font-mono text-sm">Built 10+ projects including collaborative full-stack applications and participated in 100+ hours of pair programming.</p>
+                  </div>
+                </div>
+
+                {/* Timeline marker for desktop */}
+                <div className="hidden md:block w-10 h-10 absolute left-0 transform -translate-x-1/2 bg-white border-4 border-black rounded-full"></div>
+              </div>
+
+              {/* Quantum University */}
+              <div
+                className="mb-12 flex justify-between items-center w-full right-timeline"
+                data-aos="fade-up"
+                data-aos-delay="300"
               >
                 <div 
                   className="order-1 w-full md:w-5/6 px-6 py-8 border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-1 hover:translate-y-1 transition-all duration-300 bg-white rounded-3xl group relative"
@@ -149,7 +229,7 @@ const Education = () => {
                 <div className="hidden md:block w-10 h-10 absolute left-0 transform -translate-x-1/2 bg-white border-4 border-black rounded-full"></div>
               </div>
 
-              {/* Add a second educational entry */}
+              {/* Quazi Ahmad Inter College */}
               <div
                 className="mb-0 flex justify-between items-center w-full right-timeline"
                 data-aos="fade-up"
