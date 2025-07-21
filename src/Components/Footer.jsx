@@ -1,102 +1,46 @@
-import React from 'react';
-import { FaGithub, FaLinkedinIn } from 'react-icons/fa';
-import { MdEmail, MdRocketLaunch } from 'react-icons/md';
-import { SiGeeksforgeeks  } from 'react-icons/si';
-import AOS from 'aos';
-import 'aos/dist/aos.css';
+import { Github, Linkedin, Mail } from "lucide-react";
 
-const Footer = () => {
-  React.useEffect(() => {
-    AOS.init({
-      duration: 800,
-      easing: 'ease-in-out',
-      once: true
-    });
-  }, []);
-
-  const links = [
-    {
-      icon: <FaGithub />,
-      href: "https://github.com/shahnwajalam10",
-      label: "GitHub",
-      color: "bg-[#24292E]"
-    },
-    {
-      icon: <FaLinkedinIn />,
-      href: "https://www.linkedin.com/in/shahnwaj-alam-b08415206/",
-      label: "LinkedIn",
-      color: "bg-[#0A66C2]"
-    },
-    // {
-    //   icon: <SiLeetcode />,
-    //   href: "https://leetcode.com/shahnwajalam01/",
-    //   label: "LeetCode",
-    //   color: "bg-[#FFA116]"
-    // },
-    {
-      icon: <SiGeeksforgeeks />,
-      href: "https://auth.geeksforgeeks.org/user/shahnwajalam01/", // Replace with your actual GFG profile URL
-      label: "GeeksforGeeks",
-      color: "bg-[#2F8D46]"
-    },
-    {
-      icon: <MdEmail />,
-      href: "mailto:shahnwajalam10@gmail.com",
-      label: "Email",
-      color: "bg-[#EA4335]"
-    }
-  ];
-
+const  Footer = () => {
   return (
-    <footer className="bg-[#F8F4E3] text-black py-10 px-4 mt-20 border-4 border-black shadow-[6px_6px_0_0_#000]">
-      <div className="max-w-6xl mx-auto">
-        {/* Rocket icon */}
-        <div
-          className="flex justify-center mb-6"
-          data-aos="fade-down"
-          data-aos-delay="100"
-        >
-          <div className="bg-[#FE4A49] p-3 rounded-full border-2 border-black shadow-[3px_3px_0_0_#000] hover:shadow-[5px_5px_0_0_#000] transition-all animate-bounce hover:animate-none hover:-translate-y-1">
-            <MdRocketLaunch className="text-2xl text-black" />
-          </div>
-        </div>
-
-        {/* Social links */}
-        <div
-          className="flex flex-wrap justify-center gap-4 mb-6"
-          data-aos="zoom-in"
-          data-aos-delay="200"
-        >
-          {links.map((link, i) => (
-            <a
-              key={i}
-              href={link.href}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label={link.label}
-              className="group flex flex-col items-center"
-            >
-              <div
-                className={`w-12 h-12 ${link.color} text-white text-2xl flex items-center justify-center border-2 border-black shadow-[3px_3px_0_0_#000] hover:shadow-[5px_5px_0_0_#000] hover:-translate-y-1 transition-all`}
-              >
-                {link.icon}
-              </div>
-              <span className="mt-1 text-xs font-bold opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-black text-white px-2 py-0.5 border border-black shadow-[2px_2px_0_0_#000] rounded">
-                {link.label}
-              </span>
-            </a>
-          ))}
-        </div>
-
-        {/* Bottom text */}
-        <div className="text-center" data-aos="fade-up" data-aos-delay="300">
-          <p className="inline-block text-xs font-mono mb-1 border-2 border-black bg-white px-3 py-1 shadow-[3px_3px_0_0_#000]">
-            &copy; 2025 SHAHNWAJ ALAM. ALL RIGHTS RESERVED.
-          </p>
-        </div>
+    <footer className="w-full py-8 px-4 md:px-8 bg-white border-t-4 border-black shadow-[8px_8px_0px_rgba(0,0,0,1)]">
+      <div className="container flex flex-col md:flex-row items-center justify-between gap-6">
+        <p className="text-sm text-black font-bold uppercase tracking-wide">
+          &copy; {new Date().getFullYear()} Shahnwaj alam. All Rights Reserved.
+        </p>
+        <nav className="flex gap-4 sm:gap-6">
+          <a
+            href="https://github.com/shahnwajalam10"
+            className="flex items-center justify-center w-12 h-12 bg-yellow-300 border-2 border-black shadow-[4px_4px_0px_rgba(0,0,0,1)] hover:shadow-[6px_6px_0px_rgba(0,0,0,1)] transition-all duration-200 group"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="GitHub Profile"
+          >
+            <Github className="h-6 w-6 text-black group-hover:scale-110 transition-transform duration-200" />
+            <span className="sr-only">GitHub</span>
+          </a>
+          <a
+            href="https://www.linkedin.com/in/shahnwaj-alam-b08415206/"
+            className="flex items-center justify-center w-12 h-12 bg-blue-400 border-2 border-black shadow-[4px_4px_0px_rgba(0,0,0,1)] hover:shadow-[6px_6px_0px_rgba(0,0,0,1)] transition-all duration-200 group"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="LinkedIn Profile"
+          >
+            <Linkedin className="h-6 w-6 text-black group-hover:scale-110 transition-transform duration-200" />
+            <span className="sr-only">LinkedIn</span>
+          </a>
+          <a
+            href="mailto:shahnwajalam10@gmail.com"
+            className="flex items-center justify-center w-12 h-12 bg-green-400 border-2 border-black shadow-[4px_4px_0px_rgba(0,0,0,1)] hover:shadow-[6px_6px_0px_rgba(0,0,0,1)] transition-all duration-200 group"
+            aria-label="Email Address"
+          >
+            <Mail className="h-6 w-6 text-black group-hover:scale-110 transition-transform duration-200" />
+            <span className="sr-only">Email</span>
+          </a>
+        </nav>
       </div>
     </footer>
   );
-};
+}
+
 
 export default Footer;
