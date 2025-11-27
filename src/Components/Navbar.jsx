@@ -1,6 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { FaTimes, FaBars } from "react-icons/fa";
 import { Link, useLocation } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
+import { 
+  User, 
+  Briefcase, 
+  Code, 
+  GraduationCap, 
+  FolderOpen, 
+  Mail
+} from "lucide-react";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -30,6 +39,16 @@ const Navbar = () => {
     setActiveLink(location.pathname);
     scrollToTop(); // Scroll to top whenever the route changes
   }, [location.pathname]);
+
+  // Navigation items with icons for mobile
+  const navItems = [
+    { to: "/about", text: "About", icon: <User size={18} /> },
+    { to: "/experience", text: "Experience", icon: <Briefcase size={18} /> },
+    { to: "/skills", text: "Skills", icon: <Code size={18} /> },
+    { to: "/education", text: "Education", icon: <GraduationCap size={18} /> },
+    { to: "/projects", text: "Projects", icon: <FolderOpen size={18} /> },
+    { to: "/contact", text: "Contact", icon: <Mail size={18} /> },
+  ];
 
   return (
     <>
@@ -100,6 +119,7 @@ const Navbar = () => {
             <ul className="flex flex-col gap-2 p-4">
               {[
                 { to: "/about", text: "About" },
+                { to: "/experience", text: "Experience" },
                 { to: "/skills", text: "Skills" },
                 { to: "/education", text: "Education" },
                 { to: "/projects", text: "Projects" },

@@ -93,7 +93,7 @@ const Experience = () => {
                     ASSOCIATE SOFTWARE DEVELOPER
                   </h4>
                   <h5 className="mb-4 font-semibold text-lg md:text-xl font-mono text-gray-800">
-                    Full Time
+                        Masters Union
                   </h5>
 
                   <div className="flex flex-wrap gap-4 mb-6">
@@ -103,7 +103,7 @@ const Experience = () => {
                     </div>
                     <div className="px-4 py-2 bg-[#FFE5B4] border-2 border-black rounded-full font-mono text-sm font-bold flex items-center gap-2">
                       <Code size={16} />
-                      <span>Software Developer</span>
+                      <span>Full Time</span>
                     </div>
                   </div>
 
