@@ -13,6 +13,7 @@ import Skills from "./Components/Skills";
 import Education from "./Components/Education";
 import Contact from "./Components/Contact";
 import GithubStatistics from "./Components/GithubStatistics.jsx";
+import Experience from "./Components/Experience";
 
 // import Workexperience from "./Components/Workexperience";
 
@@ -25,6 +26,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<Aboutme />} />
         {/* <Route path="/work" element={<Workexperience />} /> */}
+        <Route path="/experience" element={<Experience />} />
         <Route path="/projects" element={<Projects />} />
         <Route path="/skills" element={<Skills />} />
         <Route path="/education" element={<Education />} />

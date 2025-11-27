@@ -114,7 +114,7 @@ const Aboutme = () => {
             <div className="relative h-full border-4 border-black bg-white shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] rounded-3xl overflow-hidden transition-transform duration-300 hover:scale-105 hover:rotate-2">
               <img
                 alt="Profile Picture"
-                src="/images/profile_pic_4.png"
+                src="/images/profile_pic_5.png"
                 className="w-full h-full object-cover"
               />
             </div>

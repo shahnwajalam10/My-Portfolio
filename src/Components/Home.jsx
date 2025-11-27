@@ -11,12 +11,14 @@ import GithubStatistics from './GithubStatistics';
 
 // import GithubStatistics from "./GithubStatistics";
 // import Workexperience from "./Workexperience";
+import Experience from "./Experience";
 
 const Home = () => {
   return (
     <>
       <section id="home"><Reconnect /></section>
       <section id="about"><Aboutme /></section>
+      <section id="experience"><Experience /></section>
       {/* <section id="work"><Workexperience /></section> */}
       <section id="projects"><Projects /></section>
       <section id="skills"><Skills /></section>

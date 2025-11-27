@@ -59,6 +59,7 @@ const Navbar = () => {
             <ul className="menu menu-horizontal px-1 flex gap-2 lg:gap-4 items-center">
               {[
                 { to: "/about", text: "About" },
+                { to: "/experience", text: "Experience" },
                 { to: "/skills", text: "Skills" },
                 { to: "/education", text: "Education" },
                 { to: "/projects", text: "Projects" },
