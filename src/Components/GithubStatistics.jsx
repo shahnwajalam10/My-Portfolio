@@ -10,6 +10,7 @@ const GithubStatistics = () => {
   const [repos, setRepos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [retryKey, setRetryKey] = useState(0);
   const controls = useAnimation();
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true });
@@ -21,23 +22,90 @@ const GithubStatistics = () => {
       once: true
     });
 
-    const fetchData = async () => {
+    // Safety timeout to prevent infinite loading
+    const safetyTimeout = setTimeout(() => {
+      if (loading) {
+        console.warn('GitHub API request taking too long, setting error state');
+        setError('Request timeout. The GitHub API may be slow or unavailable.');
+        setLoading(false);
+      }
+    }, 15000); // 15 second safety timeout
+
+    const fetchData = async (retryCount = 0) => {
+      const maxRetries = 2;
       try {
+        // Create axios instance with timeout and better error handling
+        const axiosInstance = axios.create({
+          timeout: 10000, // 10 second timeout
+          headers: {
+            'Accept': 'application/vnd.github.v3+json',
+          }
+        });
+
+        console.log('Fetching GitHub data...');
         const [userResponse, reposResponse] = await Promise.all([
-          axios.get('https://api.github.com/users/shahnwajalam10'),
-          axios.get('https://api.github.com/users/shahnwajalam10/repos?sort=updated&per_page=6')
+          axiosInstance.get('https://api.github.com/users/shahnwajalam10'),
+          axiosInstance.get('https://api.github.com/users/shahnwajalam10/repos?sort=updated&per_page=6')
         ]);
-        setUserData(userResponse.data);
-        setRepos(reposResponse.data);
-        setLoading(false);
+        
+        console.log('GitHub data fetched successfully');
+        
+        if (userResponse.data && reposResponse.data) {
+          setUserData(userResponse.data);
+          setRepos(reposResponse.data);
+          setLoading(false);
+          clearTimeout(safetyTimeout);
+        } else {
+          throw new Error('Invalid response data from GitHub API');
+        }
       } catch (err) {
-        setError(err.message);
-        setLoading(false);
+        console.error('GitHub API Error:', err);
+        clearTimeout(safetyTimeout);
+        
+        // Better error messages
+        let errorMessage = 'Failed to load GitHub statistics';
+        
+        if (err.code === 'ECONNABORTED' || err.message.includes('timeout')) {
+          errorMessage = 'Request timeout. Please check your internet connection.';
+        } else if (err.response) {
+          // Server responded with error status
+          const status = err.response.status;
+          if (status === 403) {
+            errorMessage = 'GitHub API rate limit exceeded. Please try again later.';
+          } else if (status === 404) {
+            errorMessage = 'GitHub user not found.';
+          } else if (status >= 500) {
+            errorMessage = 'GitHub API server error. Please try again later.';
+          } else {
+            errorMessage = `GitHub API error: ${status}`;
+          }
+        } else if (err.request) {
+          // Request made but no response
+          errorMessage = 'No response from GitHub API. Please check your internet connection.';
+        } else {
+          errorMessage = err.message || 'An unexpected error occurred';
+        }
+
+        // Retry logic for network errors
+        if (retryCount < maxRetries && (err.code === 'ECONNABORTED' || err.code === 'ERR_NETWORK' || !err.response)) {
+          console.log(`Retrying... Attempt ${retryCount + 1}/${maxRetries}`);
+          setTimeout(() => {
+            fetchData(retryCount + 1);
+          }, 2000 * (retryCount + 1)); // Exponential backoff
+        } else {
+          setError(errorMessage);
+          setLoading(false);
+        }
       }
     };
 
     fetchData();
-  }, []);
+
+    // Cleanup function
+    return () => {
+      clearTimeout(safetyTimeout);
+    };
+  }, [retryKey]);
 
   useEffect(() => {
     if (isInView) {
@@ -69,10 +137,10 @@ const GithubStatistics = () => {
     }
   };
 
-  // Enhanced Loading State
-  if (loading) {
+  // Enhanced Loading State - Show loading but also render the section structure
+  if (loading && !userData) {
     return (
-      <section className="min-h-screen bg-white px-4 sm:px-6 py-12 sm:py-16 md:px-12 lg:px-24 border-b-4 border-black flex items-center justify-center">
+      <section id="github" className="min-h-screen bg-white px-4 sm:px-6 py-12 sm:py-16 md:px-12 lg:px-24 border-b-4 border-black flex items-center justify-center">
         <motion.div
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -99,8 +167,14 @@ const GithubStatistics = () => {
 
   // Enhanced Error State
   if (error) {
+    const handleRetry = () => {
+      setError(null);
+      setLoading(true);
+      setRetryKey(prev => prev + 1); // Trigger re-fetch
+    };
+
     return (
-      <section className="min-h-screen bg-white px-4 sm:px-6 py-12 sm:py-16 md:px-12 lg:px-24 border-b-4 border-black flex items-center justify-center">
+      <section id="github" className="min-h-screen bg-white px-4 sm:px-6 py-12 sm:py-16 md:px-12 lg:px-24 border-b-4 border-black flex items-center justify-center">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -108,15 +182,35 @@ const GithubStatistics = () => {
         >
           <div className="text-4xl sm:text-6xl mb-4 text-center">⚠️</div>
           <h2 className="text-2xl sm:text-3xl font-extrabold mb-4 text-center uppercase tracking-tight">ERROR</h2>
-          <p className="font-mono bg-black text-red-300 px-3 sm:px-4 py-2 text-center text-sm sm:text-base break-words">{error}</p>
+          <p className="font-mono bg-black text-red-300 px-3 sm:px-4 py-2 text-center text-sm sm:text-base break-words mb-4">{error}</p>
+          <motion.button
+            onClick={handleRetry}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="w-full px-6 py-3 bg-black text-white font-bold border-4 border-black hover:bg-white hover:text-black transition-all shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]"
+          >
+            RETRY
+          </motion.button>
         </motion.div>
       </section>
     );
   }
 
-  // Calculate total stars and forks
-  const totalStars = repos.reduce((sum, repo) => sum + repo.stargazers_count, 0);
-  const totalForks = repos.reduce((sum, repo) => sum + repo.forks_count, 0);
+  // Calculate total stars and forks (with safety check)
+  const totalStars = repos && repos.length > 0 ? repos.reduce((sum, repo) => sum + (repo.stargazers_count || 0), 0) : 0;
+  const totalForks = repos && repos.length > 0 ? repos.reduce((sum, repo) => sum + (repo.forks_count || 0), 0) : 0;
+
+  // Safety check - if no userData but also no error and not loading, show a fallback
+  if (!userData && !loading && !error) {
+    return (
+      <section id="github" className="min-h-screen bg-white px-4 sm:px-6 py-12 sm:py-16 md:px-12 lg:px-24 border-b-4 border-black flex items-center justify-center">
+        <div className="text-center">
+          <h2 className="text-2xl sm:text-3xl font-extrabold uppercase mb-4">GITHUB STATS</h2>
+          <p className="text-gray-600">Unable to load GitHub statistics. Please try refreshing the page.</p>
+        </div>
+      </section>
+    );
+  }
 
   // Main Content
   return (
