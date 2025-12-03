@@ -5,11 +5,85 @@ import 'aos/dist/aos.css';
 import { motion, useInView, useAnimation } from 'framer-motion';
 import { FaGithub, FaCodeBranch, FaStar, FaEye, FaCalendarAlt, FaMapMarkerAlt, FaGlobe, FaFire } from 'react-icons/fa';
 
+// Dummy data for better UX while loading
+const dummyUserData = {
+  login: 'shahnwajalam10',
+  name: 'Shahnwaj Alam',
+  avatar_url: 'https://avatars.githubusercontent.com/u/74038190?v=4',
+  bio: 'Passionate developer building amazing things with code',
+  public_repos: 15,
+  followers: 12,
+  following: 8,
+  public_gists: 5,
+  created_at: '2022-01-15T10:00:00Z',
+  location: 'India',
+  blog: '',
+  html_url: 'https://github.com/shahnwajalam10'
+};
+
+const dummyRepos = [
+  {
+    id: 1,
+    name: 'portfolio-website',
+    description: 'My personal portfolio website built with React',
+    stargazers_count: 8,
+    forks_count: 3,
+    language: 'JavaScript',
+    html_url: 'https://github.com/shahnwajalam10/portfolio'
+  },
+  {
+    id: 2,
+    name: 'blog-app',
+    description: 'A full-stack blog application with authentication',
+    stargazers_count: 12,
+    forks_count: 5,
+    language: 'React',
+    html_url: 'https://github.com/shahnwajalam10/blog-app'
+  },
+  {
+    id: 3,
+    name: 'ecommerce-platform',
+    description: 'E-commerce platform with payment integration',
+    stargazers_count: 20,
+    forks_count: 7,
+    language: 'Node.js',
+    html_url: 'https://github.com/shahnwajalam10/ecommerce'
+  },
+  {
+    id: 4,
+    name: 'task-manager',
+    description: 'Task management application with real-time updates',
+    stargazers_count: 15,
+    forks_count: 4,
+    language: 'TypeScript',
+    html_url: 'https://github.com/shahnwajalam10/task-manager'
+  },
+  {
+    id: 5,
+    name: 'weather-app',
+    description: 'Weather application with location-based forecasts',
+    stargazers_count: 6,
+    forks_count: 2,
+    language: 'JavaScript',
+    html_url: 'https://github.com/shahnwajalam10/weather-app'
+  },
+  {
+    id: 6,
+    name: 'social-media-clone',
+    description: 'Social media platform clone with modern UI',
+    stargazers_count: 25,
+    forks_count: 10,
+    language: 'React',
+    html_url: 'https://github.com/shahnwajalam10/social-clone'
+  }
+];
+
 const GithubStatistics = () => {
-  const [userData, setUserData] = useState(null);
-  const [repos, setRepos] = useState([]);
+  const [userData, setUserData] = useState(dummyUserData); // Start with dummy data
+  const [repos, setRepos] = useState(dummyRepos); // Start with dummy repos
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isDummyData, setIsDummyData] = useState(true); // Track if showing dummy data
   const [retryKey, setRetryKey] = useState(0);
   const controls = useAnimation();
   const ref = useRef(null);
@@ -51,8 +125,10 @@ const GithubStatistics = () => {
         console.log('GitHub data fetched successfully');
         
         if (userResponse.data && reposResponse.data) {
+          // Replace dummy data with real data
           setUserData(userResponse.data);
           setRepos(reposResponse.data);
+          setIsDummyData(false); // Mark as real data
           setLoading(false);
           clearTimeout(safetyTimeout);
         } else {
@@ -93,8 +169,11 @@ const GithubStatistics = () => {
             fetchData(retryCount + 1);
           }, 2000 * (retryCount + 1)); // Exponential backoff
         } else {
+          // Keep dummy data if API fails for better UX
           setError(errorMessage);
           setLoading(false);
+          // Keep dummy data visible, don't clear it
+          setIsDummyData(true);
         }
       }
     };
@@ -137,82 +216,15 @@ const GithubStatistics = () => {
     }
   };
 
-  // Enhanced Loading State - Show loading but also render the section structure
-  if (loading && !userData) {
-    return (
-      <section id="github" className="min-h-screen bg-white px-4 sm:px-6 py-12 sm:py-16 md:px-12 lg:px-24 border-b-4 border-black flex items-center justify-center">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.5 }}
-          className="text-center px-4"
-        >
-          <motion.div
-            animate={{ rotate: 360 }}
-            transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-            className="w-12 h-12 sm:w-16 sm:h-16 border-4 border-black border-t-transparent rounded-full mx-auto mb-4"
-          />
-          <motion.h2
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.2 }}
-            className="text-xl sm:text-2xl md:text-3xl font-extrabold uppercase tracking-tight"
-          >
-            LOADING GITHUB STATS...
-          </motion.h2>
-        </motion.div>
-      </section>
-    );
-  }
+  // Show dummy data immediately while loading - no separate loading state needed
 
-  // Enhanced Error State
-  if (error) {
-    const handleRetry = () => {
-      setError(null);
-      setLoading(true);
-      setRetryKey(prev => prev + 1); // Trigger re-fetch
-    };
-
-    return (
-      <section id="github" className="min-h-screen bg-white px-4 sm:px-6 py-12 sm:py-16 md:px-12 lg:px-24 border-b-4 border-black flex items-center justify-center">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="max-w-md w-full mx-4 p-6 sm:p-8 border-4 border-black bg-red-100 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] sm:shadow-[12px_12px_0px_0px_rgba(0,0,0,1)]"
-        >
-          <div className="text-4xl sm:text-6xl mb-4 text-center">⚠️</div>
-          <h2 className="text-2xl sm:text-3xl font-extrabold mb-4 text-center uppercase tracking-tight">ERROR</h2>
-          <p className="font-mono bg-black text-red-300 px-3 sm:px-4 py-2 text-center text-sm sm:text-base break-words mb-4">{error}</p>
-          <motion.button
-            onClick={handleRetry}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="w-full px-6 py-3 bg-black text-white font-bold border-4 border-black hover:bg-white hover:text-black transition-all shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]"
-          >
-            RETRY
-          </motion.button>
-        </motion.div>
-      </section>
-    );
-  }
+  // Don't show error state separately - show dummy data with error notice instead
 
   // Calculate total stars and forks (with safety check)
   const totalStars = repos && repos.length > 0 ? repos.reduce((sum, repo) => sum + (repo.stargazers_count || 0), 0) : 0;
   const totalForks = repos && repos.length > 0 ? repos.reduce((sum, repo) => sum + (repo.forks_count || 0), 0) : 0;
 
-  // Safety check - if no userData but also no error and not loading, show a fallback
-  if (!userData && !loading && !error) {
-    return (
-      <section id="github" className="min-h-screen bg-white px-4 sm:px-6 py-12 sm:py-16 md:px-12 lg:px-24 border-b-4 border-black flex items-center justify-center">
-        <div className="text-center">
-          <h2 className="text-2xl sm:text-3xl font-extrabold uppercase mb-4">GITHUB STATS</h2>
-          <p className="text-gray-600">Unable to load GitHub statistics. Please try refreshing the page.</p>
-        </div>
-      </section>
-    );
-  }
-
-  // Main Content
+  // Main Content - Always show (dummy data initially, real data when loaded) - Always show (dummy data initially, real data when loaded)
   return (
     <section id="github" className="min-h-screen bg-white px-4 sm:px-6 py-12 sm:py-16 md:px-12 md:py-20 lg:px-24 border-b-4 border-black overflow-hidden">
       <div className="max-w-7xl mx-auto relative">
@@ -233,14 +245,24 @@ const GithubStatistics = () => {
 
         {/* Page Header */}
         <div className="mb-12 sm:mb-16 md:mb-20" data-aos="fade-down" data-aos-delay="100">
-          <motion.h1
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-extrabold uppercase mb-3 sm:mb-4 text-black leading-tight"
-          >
-            GITHUB STATS
-          </motion.h1>
+          <div className="flex items-center gap-4 mb-3 sm:mb-4 flex-wrap">
+            <motion.h1
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-extrabold uppercase text-black leading-tight"
+            >
+              GITHUB STATS
+            </motion.h1>
+            {/* Loading indicator when fetching real data */}
+            {loading && (
+              <motion.div
+                animate={{ rotate: 360 }}
+                transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                className="w-6 h-6 sm:w-8 sm:h-8 border-2 border-black border-t-transparent rounded-full"
+              />
+            )}
+          </div>
           
           <motion.div 
             initial={{ scaleX: 0 }}
@@ -249,14 +271,35 @@ const GithubStatistics = () => {
             className="h-1 w-full bg-black mb-4 sm:mb-6 origin-left"
           />
           
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.6, delay: 0.5 }}
-            className="text-base sm:text-lg md:text-xl text-gray-800 font-lg max-w-2xl font-mono"
-          >
-            MY CODING JOURNEY ON GITHUB
-          </motion.p>
+          <div className="flex items-center gap-3 flex-wrap">
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.6, delay: 0.5 }}
+              className="text-base sm:text-lg md:text-xl text-gray-800 font-lg max-w-2xl font-mono"
+            >
+              MY CODING JOURNEY ON GITHUB
+            </motion.p>
+            {/* Notice when showing dummy data */}
+            {isDummyData && error && (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="px-3 py-1 bg-amber-100 border-2 border-black text-xs sm:text-sm font-bold uppercase"
+              >
+                ⚠️ DEMO DATA
+              </motion.div>
+            )}
+            {loading && !isDummyData && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="px-3 py-1 bg-blue-100 border-2 border-black text-xs sm:text-sm font-bold uppercase"
+              >
+                🔄 UPDATING...
+              </motion.div>
+            )}
+          </div>
         </div>
 
         {/* Profile Card */}
@@ -571,12 +614,35 @@ const GithubStatistics = () => {
           transition={{ delay: 1 }}
           className="text-center px-4"
         >
-          <p className="text-xs sm:text-sm font-mono uppercase tracking-widest mb-2">
-            DATA FETCHED FROM GITHUB API
-          </p>
-          <p className="text-[10px] sm:text-xs text-gray-500">
-            Last updated: {new Date().toLocaleDateString()}
-          </p>
+          {isDummyData && error ? (
+            <div className="space-y-3">
+              <p className="text-xs sm:text-sm font-mono uppercase tracking-widest mb-2 text-amber-600">
+                ⚠️ SHOWING DEMO DATA - {error}
+              </p>
+              <motion.button
+                onClick={() => {
+                  setError(null);
+                  setLoading(true);
+                  setIsDummyData(true);
+                  setRetryKey(prev => prev + 1);
+                }}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="px-6 py-2 bg-black text-white font-bold border-4 border-black hover:bg-white hover:text-black transition-all shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] text-sm"
+              >
+                🔄 RETRY LOADING REAL DATA
+              </motion.button>
+            </div>
+          ) : (
+            <>
+              <p className="text-xs sm:text-sm font-mono uppercase tracking-widest mb-2">
+                DATA FETCHED FROM GITHUB API
+              </p>
+              <p className="text-[10px] sm:text-xs text-gray-500">
+                Last updated: {new Date().toLocaleDateString()}
+              </p>
+            </>
+          )}
         </motion.footer>
       </div>
     </section>
