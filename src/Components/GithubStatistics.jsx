@@ -1,24 +1,34 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
+import { motion, useInView, useAnimation } from 'framer-motion';
+import { FaGithub, FaCodeBranch, FaStar, FaEye, FaCalendarAlt, FaMapMarkerAlt, FaGlobe, FaFire } from 'react-icons/fa';
 
 const GithubStatistics = () => {
   const [userData, setUserData] = useState(null);
+  const [repos, setRepos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const controls = useAnimation();
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true });
 
   useEffect(() => {
     AOS.init({
-      duration: 800,
-      easing: 'ease-in-out',
+      duration: 1000,
+      easing: 'cubic-bezier(0.16, 1, 0.3, 1)',
       once: true
     });
 
     const fetchData = async () => {
       try {
-        const response = await axios.get('https://api.github.com/users/shahnwajalam10');
-        setUserData(response.data);
+        const [userResponse, reposResponse] = await Promise.all([
+          axios.get('https://api.github.com/users/shahnwajalam10'),
+          axios.get('https://api.github.com/users/shahnwajalam10/repos?sort=updated&per_page=6')
+        ]);
+        setUserData(userResponse.data);
+        setRepos(reposResponse.data);
         setLoading(false);
       } catch (err) {
         setError(err.message);
@@ -29,174 +39,453 @@ const GithubStatistics = () => {
     fetchData();
   }, []);
 
-  // Loading State
+  useEffect(() => {
+    if (isInView) {
+      controls.start("visible");
+    }
+  }, [isInView, controls]);
+
+  const container = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+        delayChildren: 0.2
+      }
+    }
+  };
+
+  const item = {
+    hidden: { y: 30, opacity: 0 },
+    visible: {
+      y: 0,
+      opacity: 1,
+      transition: {
+        type: "spring",
+        damping: 12,
+        stiffness: 100
+      }
+    }
+  };
+
+  // Enhanced Loading State
   if (loading) {
     return (
-      <section className="flex justify-center items-center p-8 border-4 border-black bg-amber-50 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]" data-aos="zoom-in">
-        <div className="flex items-center gap-3">
-          <div className="w-6 h-6 bg-black animate-bounce"></div>
-          <span className="text-xl font-bold tracking-tight">LOADING GITHUB STATS...</span>
-        </div>
+      <section className="min-h-screen bg-white px-4 sm:px-6 py-12 sm:py-16 md:px-12 lg:px-24 border-b-4 border-black flex items-center justify-center">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5 }}
+          className="text-center px-4"
+        >
+          <motion.div
+            animate={{ rotate: 360 }}
+            transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+            className="w-12 h-12 sm:w-16 sm:h-16 border-4 border-black border-t-transparent rounded-full mx-auto mb-4"
+          />
+          <motion.h2
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.2 }}
+            className="text-xl sm:text-2xl md:text-3xl font-extrabold uppercase tracking-tight"
+          >
+            LOADING GITHUB STATS...
+          </motion.h2>
+        </motion.div>
       </section>
     );
   }
 
-  // Error State
+  // Enhanced Error State
   if (error) {
     return (
-      <section className="flex justify-center items-center p-8 border-4 border-black bg-red-100 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]" data-aos="shake">
-        <div className="text-center">
-          <div className="text-4xl mb-2">⚠️</div>
-          <h2 className="text-2xl font-bold mb-2 tracking-tighter">ERROR</h2>
-          <p className="font-mono bg-black text-red-300 px-2 py-1">{error}</p>
-        </div>
+      <section className="min-h-screen bg-white px-4 sm:px-6 py-12 sm:py-16 md:px-12 lg:px-24 border-b-4 border-black flex items-center justify-center">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="max-w-md w-full mx-4 p-6 sm:p-8 border-4 border-black bg-red-100 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] sm:shadow-[12px_12px_0px_0px_rgba(0,0,0,1)]"
+        >
+          <div className="text-4xl sm:text-6xl mb-4 text-center">⚠️</div>
+          <h2 className="text-2xl sm:text-3xl font-extrabold mb-4 text-center uppercase tracking-tight">ERROR</h2>
+          <p className="font-mono bg-black text-red-300 px-3 sm:px-4 py-2 text-center text-sm sm:text-base break-words">{error}</p>
+        </motion.div>
       </section>
     );
   }
+
+  // Calculate total stars and forks
+  const totalStars = repos.reduce((sum, repo) => sum + repo.stargazers_count, 0);
+  const totalForks = repos.reduce((sum, repo) => sum + repo.forks_count, 0);
 
   // Main Content
   return (
-    <main className="container mx-auto px-4 py-8">
-      {/* Page Header */}
-      <header className="text-center mb-12">
-        <h1
-          data-aos="fade-down"
-          className="inline-block text-5xl md:text-6xl font-extrabold uppercase border-4 border-black px-8 py-4 mb-8 bg-purple-100 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]"
+    <section id="github" className="min-h-screen bg-white px-4 sm:px-6 py-12 sm:py-16 md:px-12 md:py-20 lg:px-24 border-b-4 border-black overflow-hidden">
+      <div className="max-w-7xl mx-auto relative">
+        {/* Animated background elements */}
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.8 }}
+          className="absolute -top-20 -right-20 w-48 h-48 md:w-64 md:h-64 border-4 border-black bg-[#F7DF1E] rotate-45 -z-10 hidden lg:block"
+        />
+        
+        <motion.div 
+          initial={{ opacity: 0, x: -100 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.8, delay: 0.2 }}
+          className="absolute bottom-1/4 -left-16 w-24 h-24 md:w-32 md:h-32 border-4 border-black bg-[#61DAFB] -z-10 hidden lg:block"
+        />
+
+        {/* Page Header */}
+        <div className="mb-12 sm:mb-16 md:mb-20" data-aos="fade-down" data-aos-delay="100">
+          <motion.h1
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-extrabold uppercase mb-3 sm:mb-4 text-black leading-tight"
+          >
+            GITHUB STATS
+          </motion.h1>
+          
+          <motion.div 
+            initial={{ scaleX: 0 }}
+            animate={{ scaleX: 1 }}
+            transition={{ duration: 0.8, delay: 0.3 }}
+            className="h-1 w-full bg-black mb-4 sm:mb-6 origin-left"
+          />
+          
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.6, delay: 0.5 }}
+            className="text-base sm:text-lg md:text-xl text-gray-800 font-lg max-w-2xl font-mono"
+          >
+            MY CODING JOURNEY ON GITHUB
+          </motion.p>
+        </div>
+
+        {/* Profile Card */}
+        <motion.div
+          ref={ref}
+          variants={container}
+          initial="hidden"
+          animate={controls}
+          className="max-w-4xl mx-auto mb-12 sm:mb-16"
         >
-          GitHub Statistics
-        </h1>
-      </header>
-
-      {/* User Profile Card */}
-      <section 
-        className="max-w-2xl mx-auto p-6 border-4 border-black bg-white shadow-[12px_12px_0px_0px_rgba(0,0,0,1)]"
-        data-aos="fade-up"
-      >
-        {/* Profile Header */}
-        <header className="flex flex-col items-center mb-8 group" data-aos="fade-right" data-aos-delay="100">
-          <div className="relative mb-4 group-hover:rotate-2 transition-transform duration-300">
-            <img 
-              src={userData.avatar_url} 
-              alt={`${userData.login}'s avatar`}
-              className="w-32 h-32 border-4 border-black rounded-full object-cover shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] group-hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all"
-              data-aos="zoom-in"
-              data-aos-delay="200"
-            />
-            <div 
-              className="absolute -bottom-3 -right-3 bg-black text-white px-2 py-1 text-xs font-bold border-2 border-black rotate-6"
-              data-aos="zoom-in"
-              data-aos-delay="300"
-            >
-              DEV
-            </div>
-          </div>
-          
-          <h2 
-            className="text-3xl font-extrabold mb-1 underline decoration-wavy decoration-2 underline-offset-4 tracking-tight"
-            data-aos="fade-up"
-            data-aos-delay="150"
+          <motion.div
+            variants={item}
+            whileHover={{ 
+              y: -8,
+              boxShadow: "12px 12px 0px 0px rgba(0,0,0,1)",
+              transition: { type: "spring", stiffness: 300 }
+            }}
+            className="p-4 sm:p-6 md:p-8 bg-white border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] sm:shadow-[10px_10px_0px_0px_rgba(0,0,0,1)] md:shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] md:hover:shadow-[16px_16px_0px_0px_rgba(0,0,0,1)] relative"
           >
-            {userData.name || userData.login}
-          </h2>
-          
-          <p 
-            className="text-gray-800 mb-4 text-center max-w-md font-mono"
-            data-aos="fade-up"
-            data-aos-delay="200"
-          >
-            {userData.bio || "No bio available"}
-          </p>
-          
-          <a
-            href={userData.html_url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="px-6 py-3 bg-black text-white font-bold border-4 border-black hover:bg-white hover:text-black transition-all shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] active:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] active:translate-x-1 active:translate-y-1"
-            data-aos="zoom-in"
-            data-aos-delay="250"
-          >
-            → VISIT PROFILE
-          </a>
-        </header>
-
-        {/* Statistics Grid */}
-        <section className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-          {[
-            { title: "REPOS", value: userData.public_repos, bg: "bg-amber-100", emoji: "💻", delay: 100 },
-            { title: "FOLLOWERS", value: userData.followers, bg: "bg-green-100", emoji: "👥", delay: 200 },
-            { title: "FOLLOWING", value: userData.following, bg: "bg-blue-100", emoji: "👀", delay: 300 },
-            { title: "GISTS", value: userData.public_gists, bg: "bg-purple-100", emoji: "📝", delay: 400 },
-          ].map((stat, index) => (
-            <article 
-              key={index}
-              className={`p-4 border-4 border-black ${stat.bg} text-center shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:-translate-x-0.5 hover:-translate-y-0.5 transition-all`}
-              data-aos="flip-up"
-              data-aos-delay={stat.delay}
-            >
-              <div className="text-2xl mb-1" data-aos="zoom-in">{stat.emoji}</div>
-              <h3 className="text-xs font-black uppercase tracking-widest">{stat.title}</h3>
-              <p className="text-3xl font-extrabold mt-2">{stat.value}</p>
-            </article>
-          ))}
-        </section>
-
-        {/* Additional Info */}
-        <section className="space-y-3">
-          <article 
-            className="p-3 border-4 border-black bg-white flex items-center gap-3"
-            data-aos="fade-right"
-            data-aos-delay="100"
-          >
-            <span className="text-2xl">📅</span>
-            <div>
-              <p className="text-xs font-black uppercase tracking-widest">Joined</p>
-              <p className="font-bold">{new Date(userData.created_at).toLocaleDateString()}</p>
-            </div>
-          </article>
-          
-          {userData.location && (
-            <article 
-              className="p-3 border-4 border-black bg-white flex items-center gap-3"
-              data-aos="fade-right"
-              data-aos-delay="200"
-            >
-              <span className="text-2xl">📍</span>
-              <div>
-                <p className="text-xs font-black uppercase tracking-widest">Location</p>
-                <p className="font-bold">{userData.location}</p>
+            {/* Profile Header */}
+            <div className="flex flex-col md:flex-row items-center md:items-start gap-4 sm:gap-6 mb-6 sm:mb-8">
+              <motion.div
+                whileHover={{ rotate: [0, -5, 5, -5, 0], scale: 1.05 }}
+                transition={{ duration: 0.5 }}
+                className="relative flex-shrink-0"
+              >
+                <img 
+                  src={userData.avatar_url} 
+                  alt={`${userData.login}'s avatar`}
+                  className="w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 border-4 border-black object-cover shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] sm:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]"
+                />
+                <motion.div
+                  animate={{ rotate: [0, 10, -10, 0] }}
+                  transition={{ duration: 2, repeat: Infinity, repeatDelay: 3 }}
+                  className="absolute -bottom-2 -right-2 sm:-bottom-3 sm:-right-3 bg-black text-white px-2 py-1 sm:px-3 text-[10px] sm:text-xs font-bold border-2 border-black"
+                >
+                  <FaFire className="inline mr-1" /> DEV
+                </motion.div>
+              </motion.div>
+              
+              <div className="flex-1 text-center md:text-left w-full">
+                <motion.h2
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.3 }}
+                  className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold mb-2 uppercase tracking-tight break-words"
+                >
+                  {userData.name || userData.login}
+                </motion.h2>
+                
+                <motion.p
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.4 }}
+                  className="text-gray-800 mb-3 sm:mb-4 font-mono text-base sm:text-lg"
+                >
+                  @{userData.login}
+                </motion.p>
+                
+                <motion.p
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.5 }}
+                  className="text-sm sm:text-base text-gray-700 mb-4 sm:mb-6 max-w-md mx-auto md:mx-0"
+                >
+                  {userData.bio || "Passionate developer building amazing things"}
+                </motion.p>
+                
+                <motion.a
+                  href={userData.html_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="inline-flex items-center gap-2 px-4 py-2 sm:px-6 sm:py-3 bg-black text-white text-sm sm:text-base font-bold border-4 border-black hover:bg-white hover:text-black transition-all shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] sm:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] sm:hover:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]"
+                >
+                  <FaGithub className="text-sm sm:text-base" /> <span className="whitespace-nowrap">VISIT PROFILE →</span>
+                </motion.a>
               </div>
-            </article>
-          )}
-          
-          {userData.blog && (
-            <a 
-              href={userData.blog} 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className=" p-3 border-4 border-black bg-white hover:bg-black hover:text-white transition-all flex items-center gap-3"
-              data-aos="fade-right"
-              data-aos-delay="300"
+            </div>
+
+            {/* Main Statistics Grid */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mb-6 sm:mb-8">
+              {[
+                { 
+                  title: "REPOS", 
+                  value: userData.public_repos, 
+                  bg: "bg-amber-100", 
+                  icon: <FaCodeBranch className="text-xl sm:text-2xl" />,
+                  delay: 0.1 
+                },
+                { 
+                  title: "FOLLOWERS", 
+                  value: userData.followers, 
+                  bg: "bg-green-100", 
+                  icon: <FaEye className="text-xl sm:text-2xl" />,
+                  delay: 0.2 
+                },
+                { 
+                  title: "FOLLOWING", 
+                  value: userData.following, 
+                  bg: "bg-blue-100", 
+                  icon: <FaStar className="text-xl sm:text-2xl" />,
+                  delay: 0.3 
+                },
+                { 
+                  title: "GISTS", 
+                  value: userData.public_gists, 
+                  bg: "bg-purple-100", 
+                  icon: <FaGithub className="text-xl sm:text-2xl" />,
+                  delay: 0.4 
+                },
+              ].map((stat, index) => (
+                <motion.div
+                  key={index}
+                  variants={item}
+                  whileHover={{ 
+                    y: -8,
+                    scale: 1.05,
+                    boxShadow: "6px 6px 0px 0px rgba(0,0,0,1)",
+                    transition: { type: "spring", stiffness: 300 }
+                  }}
+                  whileTap={{ scale: 0.95 }}
+                  className={`p-4 sm:p-5 md:p-6 border-4 border-black ${stat.bg} text-center shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] sm:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] md:hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] cursor-pointer relative overflow-hidden group`}
+                >
+                  <div className="absolute top-0 right-0 w-3 h-3 sm:w-4 sm:h-4 bg-black" />
+                  <div className="absolute top-0 right-0 w-1.5 h-1.5 sm:w-2 sm:h-2 bg-white" />
+                  <div className="mb-2 sm:mb-3 flex justify-center">
+                    <motion.div
+                      whileHover={{ rotate: 360 }}
+                      transition={{ duration: 0.5 }}
+                    >
+                      {stat.icon}
+                    </motion.div>
+                  </div>
+                  <h3 className="text-[10px] sm:text-xs font-black uppercase tracking-widest mb-1 sm:mb-2">{stat.title}</h3>
+                  <motion.p 
+                    className="text-2xl sm:text-3xl md:text-4xl font-extrabold"
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    transition={{ delay: stat.delay, type: "spring", stiffness: 200 }}
+                  >
+                    {stat.value}
+                  </motion.p>
+                </motion.div>
+              ))}
+            </div>
+
+            {/* Additional Stats */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 mb-6 sm:mb-8">
+              <motion.div
+                variants={item}
+                whileHover={{ x: 4, boxShadow: "4px 4px 0px 0px rgba(0,0,0,1)" }}
+                className="p-3 sm:p-4 border-4 border-black bg-white flex items-center gap-3 sm:gap-4 md:hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]"
+              >
+                <div className="p-2 sm:p-3 bg-black text-white flex-shrink-0">
+                  <FaStar className="text-lg sm:text-xl" />
+                </div>
+                <div className="min-w-0">
+                  <p className="text-[10px] sm:text-xs font-black uppercase tracking-widest">TOTAL STARS</p>
+                  <p className="text-xl sm:text-2xl font-extrabold">{totalStars}</p>
+                </div>
+              </motion.div>
+
+              <motion.div
+                variants={item}
+                whileHover={{ x: 4, boxShadow: "4px 4px 0px 0px rgba(0,0,0,1)" }}
+                className="p-3 sm:p-4 border-4 border-black bg-white flex items-center gap-3 sm:gap-4 md:hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]"
+              >
+                <div className="p-2 sm:p-3 bg-black text-white flex-shrink-0">
+                  <FaCodeBranch className="text-lg sm:text-xl" />
+                </div>
+                <div className="min-w-0">
+                  <p className="text-[10px] sm:text-xs font-black uppercase tracking-widest">TOTAL FORKS</p>
+                  <p className="text-xl sm:text-2xl font-extrabold">{totalForks}</p>
+                </div>
+              </motion.div>
+            </div>
+
+            {/* Additional Info */}
+            <div className="space-y-2 sm:space-y-3">
+              <motion.div
+                variants={item}
+                whileHover={{ x: 4 }}
+                className="p-3 sm:p-4 border-4 border-black bg-white flex items-center gap-3 sm:gap-4"
+              >
+                <div className="p-2 sm:p-3 bg-black text-white flex-shrink-0">
+                  <FaCalendarAlt className="text-lg sm:text-xl" />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <p className="text-[10px] sm:text-xs font-black uppercase tracking-widest">JOINED GITHUB</p>
+                  <p className="font-bold text-sm sm:text-base md:text-lg break-words">{new Date(userData.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
+                </div>
+              </motion.div>
+              
+              {userData.location && (
+                <motion.div
+                  variants={item}
+                  whileHover={{ x: 4 }}
+                  className="p-3 sm:p-4 border-4 border-black bg-white flex items-center gap-3 sm:gap-4"
+                >
+                  <div className="p-2 sm:p-3 bg-black text-white flex-shrink-0">
+                    <FaMapMarkerAlt className="text-lg sm:text-xl" />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="text-[10px] sm:text-xs font-black uppercase tracking-widest">LOCATION</p>
+                    <p className="font-bold text-sm sm:text-base md:text-lg break-words">{userData.location}</p>
+                  </div>
+                </motion.div>
+              )}
+              
+              {userData.blog && (
+                <motion.a
+                  href={userData.blog}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  variants={item}
+                  whileHover={{ x: 4, backgroundColor: "#000", color: "#fff" }}
+                  className="p-3 sm:p-4 border-4 border-black bg-white flex items-center gap-3 sm:gap-4 transition-colors"
+                >
+                  <div className="p-2 sm:p-3 bg-black text-white flex-shrink-0">
+                    <FaGlobe className="text-lg sm:text-xl" />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="text-[10px] sm:text-xs font-black uppercase tracking-widest">WEBSITE</p>
+                    <p className="font-bold text-sm sm:text-base md:text-lg underline break-all">{userData.blog.replace(/https?:\/\//, '')}</p>
+                  </div>
+                </motion.a>
+              )}
+            </div>
+          </motion.div>
+        </motion.div>
+
+        {/* Top Repositories */}
+        {repos.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.6 }}
+            className="mb-12 sm:mb-16"
+          >
+            <motion.h2
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.7 }}
+              className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold uppercase mb-6 sm:mb-8"
             >
-              <span className="text-2xl">🌐</span>
-              <div>
-                <p className="text-xs font-black uppercase tracking-widest">Website</p>
-                <p className="font-bold underline">{userData.blog.replace(/https?:\/\//, '')}</p>
-              </div>
-            </a>
-          )}
-        </section>
+              TOP REPOSITORIES
+            </motion.h2>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 md:gap-6">
+              {repos.map((repo, index) => (
+                <motion.a
+                  key={repo.id}
+                  href={repo.html_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.8 + index * 0.1 }}
+                  whileHover={{ 
+                    y: -8,
+                    boxShadow: "8px 8px 0px 0px rgba(0,0,0,1)",
+                    transition: { type: "spring", stiffness: 300 }
+                  }}
+                  whileTap={{ scale: 0.95 }}
+                  className="p-4 sm:p-5 md:p-6 bg-white border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] sm:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] md:hover:shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] hover:bg-gray-50 transition-colors relative group"
+                >
+                  <div className="absolute top-0 right-0 w-3 h-3 sm:w-4 sm:h-4 bg-black" />
+                  <div className="absolute top-0 right-0 w-1.5 h-1.5 sm:w-2 sm:h-2 bg-white" />
+                  
+                  <div className="flex items-start justify-between mb-2 sm:mb-3 gap-2">
+                    <h3 className="text-lg sm:text-xl font-extrabold uppercase tracking-tight flex-1 group-hover:underline break-words">
+                      {repo.name}
+                    </h3>
+                    <FaGithub className="text-xl sm:text-2xl ml-2 flex-shrink-0" />
+                  </div>
+                  
+                  {repo.description && (
+                    <p className="text-gray-700 mb-3 sm:mb-4 text-xs sm:text-sm line-clamp-2">
+                      {repo.description}
+                    </p>
+                  )}
+                  
+                  <div className="flex items-center gap-3 sm:gap-4 text-xs sm:text-sm flex-wrap">
+                    <div className="flex items-center gap-1">
+                      <FaStar className="text-amber-500" />
+                      <span className="font-bold">{repo.stargazers_count}</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <FaCodeBranch className="text-blue-500" />
+                      <span className="font-bold">{repo.forks_count}</span>
+                    </div>
+                    {repo.language && (
+                      <div className="ml-auto">
+                        <span className="px-2 py-1 bg-black text-white text-[10px] sm:text-xs font-bold">
+                          {repo.language}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                </motion.a>
+              ))}
+            </div>
+          </motion.div>
+        )}
 
         {/* Footer */}
-        <footer 
-          className="mt-6 text-center text-xs font-mono"
-          data-aos="fade-up"
-          data-aos-delay="100"
+        <motion.footer
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1 }}
+          className="text-center px-4"
         >
-          <p>DATA FETCHED FROM GITHUB API</p>
-          <p className="mt-1 text-gray-500">@{new Date().getFullYear()}</p>
-        </footer>
-      </section>
-    </main>
+          <p className="text-xs sm:text-sm font-mono uppercase tracking-widest mb-2">
+            DATA FETCHED FROM GITHUB API
+          </p>
+          <p className="text-[10px] sm:text-xs text-gray-500">
+            Last updated: {new Date().toLocaleDateString()}
+          </p>
+        </motion.footer>
+      </div>
+    </section>
   );
 };
 

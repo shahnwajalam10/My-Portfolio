@@ -12,7 +12,7 @@ import {
   FaGithub,
   FaGitAlt
 } from 'react-icons/fa';
-import { SiTailwindcss, SiExpress, SiMongodb } from 'react-icons/si';
+import { SiTailwindcss, SiExpress, SiMongodb, SiMysql } from 'react-icons/si';
 
 const techStack = [
   { name: 'HTML5', icon: <FaHtml5 className="text-[#E44D26]" />, color: '#E44D26' },
@@ -23,6 +23,7 @@ const techStack = [
   { name: 'Node.js', icon: <FaNodeJs className="text-[#68A063]" />, color: '#68A063' },
   { name: 'Express', icon: <SiExpress className="text-[#000000]" />, color: '#000000' },
   { name: 'MongoDB', icon: <SiMongodb className="text-[#47A248]" />, color: '#47A248' },
+  { name: 'SQL', icon: <SiMysql className="text-[#4479A1]" />, color: '#4479A1' },
   { name: 'Git', icon: <FaGitAlt className="text-[#F05032]" />, color: '#F05032' },
   { name: 'GitHub', icon: <FaGithub className="text-[#181717]" />, color: '#181717' }
 ];
